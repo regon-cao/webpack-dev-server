@@ -1,9 +1,15 @@
 'use strict';
 
+const path = require('path');
 const request = require('supertest');
 const config = require('../fixtures/simple-config/webpack.config');
 const testServer = require('../helpers/test-server');
 const port = require('../ports-map')['host-option'];
+
+const staticDirectory = path.resolve(
+  __dirname,
+  '../fixtures/contentbase-config'
+);
 
 describe('host option', () => {
   let server = null;
@@ -15,6 +21,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           port,
@@ -25,7 +32,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('127.0.0.1');
       expect(address.port).toBe(port);
@@ -44,6 +51,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           // eslint-disable-next-line no-undefined
@@ -56,7 +64,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('::');
       expect(address.port).toBe(port);
@@ -75,6 +83,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           host: null,
@@ -86,7 +95,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('::');
       expect(address.port).toBe(port);
@@ -105,6 +114,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           host: '127.0.0.1',
@@ -116,7 +126,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('127.0.0.1');
       expect(address.port).toBe(port);
@@ -135,6 +145,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           host: 'localhost',
@@ -146,7 +157,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('127.0.0.1');
       expect(address.port).toBe(port);
@@ -165,6 +176,7 @@ describe('host option', () => {
         config,
         {
           static: {
+            directory: staticDirectory,
             watch: false,
           },
           host: '0.0.0.0',
@@ -176,7 +188,7 @@ describe('host option', () => {
     });
 
     it('server address', () => {
-      const address = server.listeningApp.address();
+      const address = server.server.address();
 
       expect(address.address).toBe('0.0.0.0');
       expect(address.port).toBe(port);

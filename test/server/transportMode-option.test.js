@@ -58,12 +58,13 @@ describe('transportMode', () => {
       beforeEach(() => {
         jest.mock('../../lib/utils/getSocketServerImplementation');
         getSocketServerImplementation = require('../../lib/utils/getSocketServerImplementation');
-        getSocketServerImplementation.mockImplementation(() => {
-          return class MockServer {
-            // eslint-disable-next-line no-empty-function
-            onConnection() {}
-          };
-        });
+        getSocketServerImplementation.mockImplementation(
+          () =>
+            class MockServer {
+              // eslint-disable-next-line no-empty-function
+              onConnection() {}
+            }
+        );
       });
 
       afterEach((done) => {
@@ -205,7 +206,7 @@ describe('transportMode', () => {
                       },
                     });
 
-                    this.socket.installHandlers(this.server.listeningApp, {
+                    this.socket.installHandlers(this.server.server, {
                       prefix: 'ws',
                     });
 
@@ -281,7 +282,7 @@ describe('transportMode', () => {
                       },
                     });
 
-                    this.socket.installHandlers(this.server.listeningApp, {
+                    this.socket.installHandlers(this.server.server, {
                       prefix: this.server.options.client.path,
                     });
                   }
@@ -377,7 +378,7 @@ describe('transportMode', () => {
                       },
                     });
 
-                    this.socket.installHandlers(this.server.listeningApp, {
+                    this.socket.installHandlers(this.server.server, {
                       prefix: this.server.options.client.path,
                     });
                   }

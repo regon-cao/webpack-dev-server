@@ -7,14 +7,12 @@ const testServer = require('../helpers/test-server');
 const config = require('../fixtures/contentbase-config/webpack.config');
 const port = require('../ports-map')['static-directory-option'];
 
-const publicDirectory = path.resolve(
+const staticDirectory = path.resolve(
   __dirname,
-  '../fixtures/contentbase-config/public'
+  '../fixtures/contentbase-config'
 );
-const otherPublicDirectory = path.resolve(
-  __dirname,
-  '../fixtures/contentbase-config/other'
-);
+const publicDirectory = path.resolve(staticDirectory, 'public');
+const otherPublicDirectory = path.resolve(staticDirectory, 'other');
 
 describe('static.directory option', () => {
   let server;
@@ -57,7 +55,7 @@ describe('static.directory option', () => {
     it('Watches folder recursively', (done) => {
       // chokidar emitted a change,
       // meaning it watched the file correctly
-      server.contentBaseWatchers[0].on('change', () => {
+      server.staticWatchers[0].on('change', () => {
         done();
       });
 
@@ -73,7 +71,7 @@ describe('static.directory option', () => {
 
       // chokidar emitted a change,
       // meaning it watched the file correctly
-      server.contentBaseWatchers[0].on('change', () => {
+      server.staticWatchers[0].on('change', () => {
         fs.unlinkSync(filePath);
         done();
       });
@@ -290,7 +288,9 @@ describe('static.directory option', () => {
 
   describe('default to PWD', () => {
     beforeAll((done) => {
-      jest.spyOn(process, 'cwd').mockImplementation(() => publicDirectory);
+      jest
+        .spyOn(process, 'cwd')
+        .mockImplementation(() => path.resolve(staticDirectory));
 
       server = testServer.start(
         config,
@@ -310,7 +310,7 @@ describe('static.directory option', () => {
     });
 
     it('Request to page', (done) => {
-      req.get('/other.html').expect(200, done);
+      req.get('/index.html').expect(200, done);
     });
   });
 

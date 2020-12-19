@@ -93,19 +93,20 @@ describe('options', () => {
               expect(false).toBeTruthy();
             }
           })
-          .then(() => {
-            return new Promise((resolve) => {
-              if (server) {
-                server.close(() => {
-                  compiler = null;
-                  server = null;
+          .then(
+            () =>
+              new Promise((resolve) => {
+                if (server) {
+                  server.close(() => {
+                    compiler = null;
+                    server = null;
+                    resolve();
+                  });
+                } else {
                   resolve();
-                });
-              } else {
-                resolve();
-              }
-            });
-          })
+                }
+              })
+          )
           .then(() => {
             current += 1;
           });
@@ -207,6 +208,37 @@ describe('options', () => {
               progress: false,
             },
           },
+          {
+            client: {
+              overlay: true,
+            },
+          },
+          {
+            client: {
+              overlay: {},
+            },
+          },
+          {
+            client: {
+              overlay: {
+                error: true,
+              },
+            },
+          },
+          {
+            client: {
+              overlay: {
+                warnings: true,
+              },
+            },
+          },
+          {
+            client: {
+              overlay: {
+                arbitrary: '',
+              },
+            },
+          },
         ],
         failure: [
           'whoops!',
@@ -235,6 +267,25 @@ describe('options', () => {
           {
             client: {
               progress: '',
+            },
+          },
+          {
+            client: {
+              overlay: '',
+            },
+          },
+          {
+            client: {
+              overlay: {
+                errors: '',
+              },
+            },
+          },
+          {
+            client: {
+              overlay: {
+                warnings: '',
+              },
             },
           },
         ],
@@ -326,40 +377,6 @@ describe('options', () => {
       openPage: {
         success: [''],
         failure: [false],
-      },
-      overlay: {
-        success: [
-          true,
-          {},
-          {
-            overlay: {
-              errors: true,
-            },
-          },
-          {
-            overlay: {
-              warnings: true,
-            },
-          },
-          {
-            overlay: {
-              arbitrary: '',
-            },
-          },
-        ],
-        failure: [
-          '',
-          {
-            overlay: {
-              errors: '',
-            },
-          },
-          {
-            overlay: {
-              warnings: '',
-            },
-          },
-        ],
       },
       port: {
         success: ['', 0, null],
@@ -479,9 +496,7 @@ describe('options', () => {
     };
 
     Object.keys(cases).forEach((key) => {
-      it(key, () => {
-        return validateOption(key, cases[key]);
-      });
+      it(key, () => validateOption(key, cases[key]));
     });
   });
 });

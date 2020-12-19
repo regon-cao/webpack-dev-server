@@ -34,15 +34,15 @@ describe('Server', () => {
           (compilation) => {
             const mainDeps = compilation.entries.get('main').dependencies;
             const globalDeps = compilation.globalEntry.dependencies;
-            entries = globalDeps.concat(mainDeps).map((dep) => {
-              return relative('.', dep.request).split(sep);
-            });
+            entries = globalDeps
+              .concat(mainDeps)
+              .map((dep) => relative('.', dep.request).split(sep));
           }
         );
       } else {
-        entries = server.middleware.context.compiler.options.entry.map((p) => {
-          return relative('.', p).split(sep);
-        });
+        entries = server.middleware.context.compiler.options.entry.map((p) =>
+          relative('.', p).split(sep)
+        );
       }
     }
 
@@ -85,12 +85,11 @@ describe('Server', () => {
     });
   });
 
-  it('test listeningApp error reporting', () => {
+  it('test server error reporting', () => {
     const compiler = webpack(config);
     const server = new Server(compiler, baseDevConfig);
 
-    const emitError = () =>
-      server.listeningApp.emit('error', new Error('Error !!!'));
+    const emitError = () => server.server.emit('error', new Error('Error !!!'));
 
     expect(emitError).toThrowError();
   });
